@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>約旭全出門</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:wght@600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5efe6;
+    --surface: #fdf8f2;
+    --surface2: #ede8e0;
+    --accent: #b07d5b;
+    --accent2: #c9956e;
+    --text: #3d2e22;
+    --muted: #9c8272;
+    --border: #ddd0c0;
+    --success: #7aab6e;
+    --radius: 16px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    width: 100%;
+    padding: 56px 24px 36px;
+    text-align: center;
+    position: relative;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  main {
+    width: 100%;
+    max-width: 640px;
+    padding: 48px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 4px; height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(176,125,91,0.07);
+  }
+
+  .form-wrapper {
+    padding: 32px;
+  }
+
+  .form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  input, textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 15px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(176,125,91,0.12);
+  }
+
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    position: absolute;
+    left: 0; right: 0;
+    width: 100%; height: 100%;
+    opacity: 0;
+  }
+
+  #date {
+    position: relative;
+    cursor: pointer;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 8px 16px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .btn-submit {
+    width: 100%;
+    margin-top: 8px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .success-state {
+    display: none;
+    text-align: center;
+    padding: 48px 32px;
+  }
+
+  .success-icon {
+    width: 64px; height: 64px;
+    background: rgba(122,171,110,0.1);
+    border: 2px solid var(--success);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 20px;
+    color: var(--success);
+  }
+
+  .success-state h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--success);
+    margin-bottom: 8px;
+  }
+
+  .success-state p { color: var(--muted); font-size: 15px; }
+
+  .error-msg {
+    display: none;
+    background: rgba(220,80,80,0.08);
+    border: 1px solid rgba(220,80,80,0.25);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #c0392b;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .form-wrapper { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">你有空嗎</p>
+  <h1>出門! 👋</h1>
+</header>
+
+<main>
+  <div>
+    <p class="section-label">填寫邀約</p>
+    <div class="card">
+      <div class="form-wrapper" id="formWrapper">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>想約幾月幾號幾點？</label>
+            <input type="datetime-local" id="date" required>
+          </div>
+
+          <div class="form-group">
+            <label>想做什麼？（可複選）</label>
+            <div class="chips" id="chips">
+              <span class="chip" data-val="看電影">🎬 看電影</span>
+              <span class="chip" data-val="吃飯">🍜 吃飯</span>
+              <span class="chip" data-val="喝咖啡">☕ 喝咖啡</span>
+              <span class="chip" data-val="逛街">🛍️ 逛街</span>
+              <span class="chip" data-val="其他">✨ 其他</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>備註（可選）</label>
+            <textarea id="note" placeholder="有什麼想說的都可以寫這裡..."></textarea>
+          </div>
+
+        </div>
+
+        <button class="btn-submit" id="submitBtn" onclick="sendForm()">傳送 →</button>
+        <div class="error-msg" id="errorMsg"></div>
+      </div>
+
+      <div class="success-state" id="successState">
+        <div class="success-icon">✓</div>
+        <h2>收到！</h2>
+        <p>等待回復吧😊</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  emailjs.init('Te3BC0YuZ3TprQlt8');
+
+  let selectedActivities = new Set();
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      if (selectedActivities.has(chip.dataset.val)) {
+        selectedActivities.delete(chip.dataset.val);
+        chip.classList.remove('active');
+      } else {
+        selectedActivities.add(chip.dataset.val);
+        chip.classList.add('active');
+      }
+    });
+  });
+
+  async function sendForm() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const date = document.getElementById('date').value;
+    const note = document.getElementById('note').value.trim();
+    const errorMsg = document.getElementById('errorMsg');
+    const submitBtn = document.getElementById('submitBtn');
+
+    errorMsg.style.display = 'none';
+    if (!name) { showError('請填寫你的名字'); return; }
+    if (!date) { showError('請選擇想約的時間'); return; }
+    if (!selectedActivities.size) { showError('請選擇想做什麼'); return; }
+
+    const dateObj = new Date(date);
+    const formattedDate = dateObj.toLocaleString('zh-TW', {
+      year: 'numeric', month: 'long', day: 'numeric',
+      weekday: 'long', hour: '2-digit', minute: '2-digit'
+    });
+
+    const activityStr = [...selectedActivities].join('、');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '傳送中...';
+
+    try {
+      await emailjs.send('service_c8gbqpi', 'template_bvo0fd6', {
+        name: name,
+        email: email || '未填寫',
+        date: formattedDate,
+        activity: activityStr,
+        note: note || '無',
+        title: `${activityStr} - ${name}`
+      });
+
+      document.getElementById('formWrapper').style.display = 'none';
+      document.getElementById('successState').style.display = 'block';
+
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '傳給旭全 →';
+      showError('傳送失敗，請稍後再試 😢');
+      console.error(err);
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
